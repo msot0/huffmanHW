@@ -1,0 +1,62 @@
+[
+  {
+    "testName": "sanity",
+    "points": 10
+  },
+  {
+    "testName": "decode.big",
+    "points": 10
+  },
+  {
+    "testName": "decode.simple",
+    "points": 10
+  },
+  {
+    "testName": "encode.big",
+    "points": 10
+  },
+  {
+    "testName": "encode.simple",
+    "points": 10
+  },
+  {
+    "testName": "freqmap",
+    "points": 10
+  },
+  {
+    "testName": "heap.down",
+    "points": 10
+  },
+  {
+    "testName": "heap.extract",
+    "points": 10
+  },
+  {
+    "testName": "heap.indexes",
+    "points": 10
+  },
+  {
+    "testName": "heap.insert",
+    "points": 10
+  },
+  {
+    "testName": "heap.peeksize",
+    "points": 10
+  },
+  {
+    "testName": "heap.up",
+    "points": 10
+  },
+  {
+    "testName": "pq",
+    "points": 10
+  },
+  {
+    "testName": "roundtrip",
+    "points": 10
+  },
+  {
+    "testName": "tree",
+    "points": 10
+  }
+]

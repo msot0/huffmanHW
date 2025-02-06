@@ -1,0 +1,171 @@
+name: Autograding Tests
+'on':
+  - push
+  - repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Sanity
+        id: sanity
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Sanity
+          setup-command: npm install
+          command: npm test sanity
+          timeout: 10
+          max-score: 10
+      - name: Decode Big
+        id: decode-big
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Decode Big
+          setup-command: npm install
+          command: npm test decode.big
+          timeout: 10
+          max-score: 10
+      - name: Decode Simple
+        id: decode-simple
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Decode Simple
+          setup-command: npm install
+          command: npm test decode.simple
+          timeout: 10
+          max-score: 10
+      - name: Encode Big
+        id: encode-big
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Encode Big
+          setup-command: npm install
+          command: npm test encode.big
+          timeout: 10
+          max-score: 10
+      - name: Encode Simple
+        id: encode-simple
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Encode Simple
+          setup-command: npm install
+          command: npm test encode.simple
+          timeout: 10
+          max-score: 10
+      - name: Freqmap
+        id: freqmap
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Freqmap
+          setup-command: npm install
+          command: npm test freqmap
+          timeout: 10
+          max-score: 10
+      - name: Heap Down
+        id: heap-down
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Heap Down
+          setup-command: npm install
+          command: npm test heap.down
+          timeout: 10
+          max-score: 10
+      - name: Heap Extract
+        id: heap-extract
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Heap Extract
+          setup-command: npm install
+          command: npm test heap.extract
+          timeout: 10
+          max-score: 10
+      - name: Heap Indexes
+        id: heap-indexes
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Heap Indexes
+          setup-command: npm install
+          command: npm test heap.indexes
+          timeout: 10
+          max-score: 10
+      - name: Heap Insert
+        id: heap-insert
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Heap Insert
+          setup-command: npm install
+          command: npm test heap.insert
+          timeout: 10
+          max-score: 10
+      - name: Heap Peeksize
+        id: heap-peeksize
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Heap Peeksize
+          setup-command: npm install
+          command: npm test heap.peeksize
+          timeout: 10
+          max-score: 10
+      - name: Heap Up
+        id: heap-up
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Heap Up
+          setup-command: npm install
+          command: npm test heap.up
+          timeout: 10
+          max-score: 10
+      - name: Pq
+        id: pq
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Pq
+          setup-command: npm install
+          command: npm test pq
+          timeout: 10
+          max-score: 10
+      - name: Roundtrip
+        id: roundtrip
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Roundtrip
+          setup-command: npm install
+          command: npm test roundtrip
+          timeout: 10
+          max-score: 10
+      - name: Tree
+        id: tree
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Tree
+          setup-command: npm install
+          command: npm test tree
+          timeout: 10
+          max-score: 10
+      - name: Autograding Reporter
+        uses: classroom-resources/autograding-grading-reporter@v1
+        env:
+          SANITY_RESULTS: ${{steps.sanity.outputs.result}}
+          DECODE-BIG_RESULTS: ${{steps.decode-big.outputs.result}}
+          DECODE-SIMPLE_RESULTS: ${{steps.decode-simple.outputs.result}}
+          ENCODE-BIG_RESULTS: ${{steps.encode-big.outputs.result}}
+          ENCODE-SIMPLE_RESULTS: ${{steps.encode-simple.outputs.result}}
+          FREQMAP_RESULTS: ${{steps.freqmap.outputs.result}}
+          HEAP-DOWN_RESULTS: ${{steps.heap-down.outputs.result}}
+          HEAP-EXTRACT_RESULTS: ${{steps.heap-extract.outputs.result}}
+          HEAP-INDEXES_RESULTS: ${{steps.heap-indexes.outputs.result}}
+          HEAP-INSERT_RESULTS: ${{steps.heap-insert.outputs.result}}
+          HEAP-PEEKSIZE_RESULTS: ${{steps.heap-peeksize.outputs.result}}
+          HEAP-UP_RESULTS: ${{steps.heap-up.outputs.result}}
+          PQ_RESULTS: ${{steps.pq.outputs.result}}
+          ROUNDTRIP_RESULTS: ${{steps.roundtrip.outputs.result}}
+          TREE_RESULTS: ${{steps.tree.outputs.result}}
+        with:
+          runners: >-
+            sanity,decode-big,decode-simple,encode-big,encode-simple,freqmap,heap-down,heap-extract,heap-indexes,heap-insert,heap-peeksize,heap-up,pq,roundtrip,tree

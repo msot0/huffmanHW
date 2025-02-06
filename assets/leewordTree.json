@@ -1,0 +1,76 @@
+{
+      "frequency": 11,
+      "character": null,
+      "left": {
+        "frequency": 4,
+        "character": null,
+        "left": {
+          "frequency": 2,
+          "character": "o",
+          "left": null,
+          "right": null
+        },
+        "right": {
+          "frequency": 2,
+          "character": null,
+          "left": {
+            "frequency": 1,
+            "character": "h",
+            "left": null,
+            "right": null
+          },
+          "right": {
+            "frequency": 1,
+            "character": "e",
+            "left": null,
+            "right": null
+          }
+        }
+      },
+      "right": {
+        "frequency": 7,
+        "character": null,
+        "left": {
+          "frequency": 3,
+          "character": "l",
+          "left": null,
+          "right": null
+        },
+        "right": {
+          "frequency": 4,
+          "character": null,
+          "left": {
+            "frequency": 2,
+            "character": null,
+            "left": {
+              "frequency": 1,
+              "character": " ",
+              "left": null,
+              "right": null
+            },
+            "right": {
+              "frequency": 1,
+              "character": "w",
+              "left": null,
+              "right": null
+            }
+          },
+          "right": {
+            "frequency": 2,
+            "character": null,
+            "left": {
+              "frequency": 1,
+              "character": "r",
+              "left": null,
+              "right": null
+            },
+            "right": {
+              "frequency": 1,
+              "character": "d",
+              "left": null,
+              "right": null
+            }
+          }
+        }
+      }
+    }
