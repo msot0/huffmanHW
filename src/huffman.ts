@@ -133,7 +133,7 @@ export const heapIdxParent = (idx: number): number => {
   // IMPLEMENT
   // Pseudocode:
   // return the floor of (idx - 1) / 2
-  return NaN;
+  return Math.floor((idx -1)/2);
 };
 
 /**
@@ -153,7 +153,13 @@ export const heapIdxChildren = (
   // pseudocode:
   // left index is (2* idx) + 1
   // right index is (2* idx) + 2
-  return null;
+  // index 1
+  // left = (2*1)+1=3
+  // right = 4
+  const left = 2 * idx + 1;
+  const right = (2 * idx + 1) + 1;
+
+  return { left, right };
 };
 
 /**
@@ -175,7 +181,15 @@ export const isHigherPriority = <T>(
   // if heap.semantics is "max"
   //   return true if heap.items[idxA].priority is GREATER THAN heap.items[idxB].priority
   // otherwise return false
-  return false;
+  const valA = heap.items[idxA].priority;
+  const valB = heap.items[idxB].priority;
+  if (heap.semantics === 'max') {
+    // use larger of two
+    return (valA > valB);
+  } else {
+  // use smaller of two
+  return (valA < valB);
+  }
 };
 
 /**
@@ -194,7 +208,17 @@ export const heapUp = <T>(heap: BinaryHeap<T>, childIdx: number): void => {
   //   if the child has higher priority than the parent:
   //     swap the child and parent using a temp variable
   //     recursively call heapUp with the parent index
-};
+  if (childIdx === 0) {
+    return;
+  }
+  const parentIdx = heapIdxParent(childIdx);
+  if (isHigherPriority(heap, childIdx, parentIdx)) {
+    const temp = heap.items[parentIdx];
+    heap.items[parentIdx] = heap.items[childIdx];
+    heap.items[childIdx]= temp;
+    heapUp(heap, parentIdx);
+  }
+}; // in class code stop here, do extra credit w huffman shiz (go to yt vid & slides)!!!!!!!!!!!!!!!!!!!
 
 /**
  * This fixes the invariant of the binary heap starting from the given parent
@@ -214,6 +238,24 @@ export const heapDown = <T>(heap: BinaryHeap<T>, parentIdx: number): void => {
   //   swap the parent item the higher priority child. keep in mind that it is
   //   possible that only one child (left) exists. After swapping, recursively
   //   call heapDown with the child index that was swapped with the parent.
+
+  const { left , right } = heapIdxChildren(parentIdx);
+  let largest = parentIdx;
+
+  if (left < heap.items.length && isHigherPriority(heap, left, largest)) {
+    largest = left;
+  }
+  if (right < heap.items.length && isHigherPriority(heap, right, largest)) {
+    largest = right;
+  }
+  if (largest !== parentIdx) {
+    const temp = heap.items[parentIdx];
+    heap.items[parentIdx] = heap.items[largest];
+    heap.items[largest] = temp;
+    heapDown(heap, largest);
+  }
+  
+
 };
 
 // ---------------------------------------------------------    [ Operations ]
@@ -225,7 +267,8 @@ export const binaryHeapSize = <T>(heap: BinaryHeap<T>): number => {
   // IMPLEMENT
   // pseudocode:
   // return the length of the heap's items list
-  return NaN;
+return heap.items.length;
+
 };
 
 /**
@@ -240,6 +283,9 @@ export const binaryHeapInsert = <T>(
   // pseudocode:
   // push the item into the heap's item list
   // call heapUp with the index of the newly inserted item
+  heap.items.push(item);
+  heapUp(heap, heap.items.length - 1);
+
 };
 
 /**
@@ -262,7 +308,18 @@ export const binaryHeapExtract = <T>(
   // from the root index (zero) to repair the heap.
   //
   // return the item that was removed, which was referenced at the start.
-  return null;
+  const item = heap.items[0];
+  if (heap.items.length === 0) {
+    return undefined;
+  } else {
+    if (heap.items.length === 1) {
+      heap.items.pop();
+    } else {
+      heap.items[0] = heap.items.pop();
+      heapDown(heap,0);
+    } 
+  } 
+  return item; 
 };
 
 /**
@@ -276,7 +333,11 @@ export const binaryHeapPeek = <T>(
   // pseudocode:
   // if the heap is empty, return undefined
   // else, return the first item in the heap without removing it
-  return null;
+  if (heap.items.length === 0) {
+    return undefined;
+  } else {
+    return heap.items[0];
+  } 
 };
 
 /**
@@ -303,8 +364,15 @@ export const binaryHeapPeek = <T>(
 export const huffmanCreateFrequencyMap = (
   corpus: string
 ): Record<string, number> => {
-  // IMPLEMENT
-  return null;
+  const frequencyMap: Record<string, number> = {};
+  for (const char of corpus){
+    if (frequencyMap[char] !== undefined){
+      frequencyMap[char]++;
+    } else {
+      frequencyMap[char] = 1;
+    }
+  }
+  return frequencyMap;
 };
 
 /**
@@ -319,12 +387,20 @@ export const huffmanCreateTree = (
   // Hint: you need to create priority queue with smaller numbers having higher
   // priority. It will contain HuffmanNode items. The syntax for doing this is:
   // const pq = initPriorityQueue<HuffmanNode>("min");
-  //
+  const pq = initPriorityQueue<HuffmanNode>("min");
   // Then, iterate over all the character/frequency values in the frequencyMap.
   // Syntax looks like this:
   //
   // for (const [character, frequency] of Object.entries(frequencyMap)) { .. }
-  //
+  for (const [character, frequency] of Object.entries(frequencyMap)) {
+    const node: HuffmanNode = {
+      frequency,
+      character,
+      left: null,
+      right: null,
+    };
+    pq.enqueue(node, frequency);
+  }
   // inside each iteration, create a new HuffmanNode object using the frequency
   // and character data, and with null left & right fields. Then enqueue that
   // node into the priority queue with the related frequency.
@@ -335,11 +411,22 @@ export const huffmanCreateTree = (
   // internal node. Its frequency is the sum of the left and right. Its left and
   // right values should be the left and right variables you just got from the
   // queue. Then enqueue that combined node back into the pq.
-  //
+  while (pq.size() > 1) {
+    const left = pq.dequeue();
+    const right = pq.dequeue();
+    const combinedNode: HuffmanNode = {
+      frequency: (left.frequency + right.frequency),
+      character: null,
+      left,
+      right,
+    };
+    pq.enqueue(combinedNode, combinedNode.frequency);
+  }
+
   // Last thing to do is to peek at the only remaining item in the priority
   // queue and return it.
-
-  return null;
+  return pq.peek();
+  
 };
 
 /**
@@ -357,8 +444,25 @@ export const huffmanCreateTree = (
 export const huffmanCreateCodeMap = (
   root: HuffmanNode
 ): Record<string, string> => {
-  // IMPLEMENT
-  return null;
+  if (root === null) {
+    return {};
+  } else {
+    const codeMap: Record<string, string> = {};
+    const traverse = (node: HuffmanNode, code: string) => {
+      if (node.character !== null) {
+        codeMap[node.character] = code;
+      } else {
+        if(node.left !== null) {
+          traverse(node.left, code + "0");
+        } 
+        if(node.right !== null) {
+          traverse(node.right, code + '1');
+        }
+      } 
+    };
+    traverse(root, "");
+    return codeMap;
+  }
 };
 
 /**
@@ -371,7 +475,11 @@ export const huffmanEncode = (
   codeMap: Record<string, string>
 ): string => {
   // IMPLEMENT
-  return null;
+  let encodedString = "";
+  for (const char of plaintext) {
+    encodedString += codeMap[char];
+  }
+  return encodedString;
 };
 
 /**
@@ -380,6 +488,18 @@ export const huffmanEncode = (
  * to decode the string into a plaintext string.
  */
 export const huffmanDecode = (encoded: string, root: HuffmanNode): string => {
-  // IMPLEMENT
-  return null;
+  let decodedString = "";
+  let currentNode = root;
+  for (const bit of encoded) {
+    if(bit === "0") {
+      currentNode = currentNode.left;
+    } else {
+      currentNode = currentNode.right;
+    }
+    if (currentNode.character !== null) {
+      decodedString += currentNode.character;
+      currentNode = root;
+    }
+  }
+  return decodedString;
 };
